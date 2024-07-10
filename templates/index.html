@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <a href="https://bgscet.ac.in/" target="_blank" style="color: #95B8D1;">BGSCET CHATBOT</a>
+    </div>
+    <div class="container">
+        <h1>||Jai Sri Gurudev||</h1>
+        <div id="chat-window">
+            <div id="chat-history"></div>
+            <form id="chat-form">
+                <input type="text" id="message" name="message" autocomplete="off" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData(this);
+            let response = await fetch('/chat', {
+                method: 'POST',
+                body: formData
+            });
+            
+            let result = await response.json();
+            displayMessage(result.user_message, 'you');
+            displayMessage(result.bot_response, 'bot');
+            document.getElementById('message').value = '';
+        });
+
+        function displayMessage(message, sender) {
+            let chatHistory = document.getElementById('chat-history');
+            let messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            messageElement.textContent = message;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+    </script>
+</body>
+</html>
